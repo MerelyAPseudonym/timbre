@@ -25,10 +25,15 @@
        :?line   nil ; ''
        :?err    throwable})))
 
-(deftype LoggerFactory []
+(deftype LoggerFactory [cache]
   clojure.tools.logging.impl/LoggerFactory
   (name [_] "Timbre")
-  (get-logger [_ logger-ns] (Logger. logger-ns)))
+  (get-logger [_ logger-ns]
+    ;; TODO verify that it's kosher to use a namespace as a key in a map.
+    (or (get @cache logger-ns)
+        (let [logger (->Logger logger-ns)]
+          (swap! cache assoc logger-ns logger)
+          logger))))
 
 (defn use-timbre []
   (alter-var-root (var clojure.tools.logging/*logger-factory*)
