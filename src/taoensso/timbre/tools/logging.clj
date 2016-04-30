@@ -7,8 +7,7 @@
   working with a legacy codebase)."
 
   (:require clojure.tools.logging
-            (taoensso [encore :as enc]
-                      [timbre :as timbre])))
+            [taoensso.timbre :as timbre]))
 
 (deftype Logger [logger-ns]
   clojure.tools.logging.impl/Logger
